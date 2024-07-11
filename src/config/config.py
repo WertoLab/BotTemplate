@@ -21,5 +21,7 @@ class Config:
         print(f"Loaded WEBHOOK_URL: {self.WEBHOOK_URL}")
         print(f"Loaded ALLOWED_USERS: {self.ALLOWED_USERS}")
 
+    def get(self, key, default=None):
+        return getattr(self, key, default)
 
 config = Config()

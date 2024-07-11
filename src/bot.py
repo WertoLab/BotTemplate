@@ -1,5 +1,6 @@
 import logging
 from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiohttp import web
 from config import config
@@ -8,20 +9,19 @@ from handlers.commands import router as commands_router
 logging.basicConfig(level=logging.INFO)
 
 bot = Bot(token=config.TOKEN_BOT)
-dp = Dispatcher()
-
+storage = RedisStorage.from_url(config.REDIS_URL)
+dp = Dispatcher(storage=storage)
 dp.include_router(commands_router)
-
 
 async def on_startup(app: web.Application):
     await bot.set_webhook(config.WEBHOOK_URL)
     logging.info(f"Webhook set to {config.WEBHOOK_URL}")
 
-
 async def on_shutdown(app: web.Application):
     await bot.delete_webhook()
+    await storage.close()
+    await storage.wait_closed()
     logging.info("Webhook removed")
-
 
 def main():
     app = web.Application()
