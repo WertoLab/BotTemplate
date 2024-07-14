@@ -30,7 +30,7 @@ async def on_shutdown(app):
     await bot.delete_webhook()
     await shutdown_redis()
     await dp.storage.close()
-    await dp.storage.wait_closed()
+    await bot.session.close()
 
 
 async def handle(request):
