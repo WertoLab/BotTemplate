@@ -1,5 +1,5 @@
 import redis.asyncio as aioredis
-from src.config import config
+from config import config
 
 class RedisClient:
     def __init__(self):
