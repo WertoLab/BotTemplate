@@ -34,6 +34,9 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
 
   dbmate:
     image: amacneil/dbmate
@@ -44,7 +47,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgres://postgres:6535819169DB@postgres:5432/ScienceBot?sslmode=disable
+      - DATABASE_URL=${DATABASE_URL}
 
 volumes:
   postgres_data:
