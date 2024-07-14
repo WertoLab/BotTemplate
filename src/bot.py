@@ -1,15 +1,15 @@
 import logging
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage
-from aiogram.webhook.aiohttp_server import setup_application
 from aiohttp import web
 from config import config
 from handlers.commands import router as commands_router
 from database import setup_redis, shutdown_redis, redis_client
+from aiogram.client.bot import DefaultBotProperties
 
 logging.basicConfig(level=logging.INFO)
 
-bot = Bot(token=config.TOKEN_BOT, parse_mode="HTML")
+bot = Bot(token=config.TOKEN_BOT, default=DefaultBotProperties(parse_mode='HTML'))
 
 
 async def on_startup(app):
