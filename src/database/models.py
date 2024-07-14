@@ -16,6 +16,7 @@ class Paper(Base):
     __tablename__ = 'papers'
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
+    translated_title = Column(String, nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
     user = relationship('User', back_populates='papers')

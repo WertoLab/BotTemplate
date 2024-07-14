@@ -6,11 +6,19 @@ from sqlalchemy.orm import Session
 from database.models import User, Paper
 from database.db import database
 from handlers.filters import IsAllowedUser
+from googletrans import Translator
 
 router = Router()
 
+translator = Translator()
+
+
 class PaperState(StatesGroup):
     waiting_for_title = State()
+
+async def translate_text(text, dest_language='en'):
+    translated = translator.translate(text, dest=dest_language)
+    return translated.text
 
 @router.message(Command("start"))
 async def start(message: types.Message):
@@ -37,7 +45,9 @@ async def save_paper(message: types.Message, state: FSMContext):
         session.add(user)
         session.commit()
 
-    paper = Paper(title=message.text, user_id=user.id)
+    translated_title = await translate_text(message.text)
+
+    paper = Paper(title=message.text, translated_title=translated_title, user_id=user.id)
     session.add(paper)
     session.commit()
     session.close()
