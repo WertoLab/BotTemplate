@@ -32,3 +32,4 @@ class Config:
         return getattr(self, key, default)
 
 config = Config()
+

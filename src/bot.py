@@ -31,6 +31,7 @@ async def on_shutdown(app):
     await shutdown_redis()
     await dp.storage.close()
 
+    # Закрытие всех клиентских сессий
     await bot.session.close()
 
 
