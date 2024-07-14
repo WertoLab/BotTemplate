@@ -1,5 +1,4 @@
-import aioredis
-import asyncio
+import redis.asyncio as aioredis
 from config import config
 
 class RedisClient:
@@ -7,12 +6,11 @@ class RedisClient:
         self._redis = None
 
     async def connect(self):
-        self._redis = await aioredis.create_redis_pool(config.REDIS_URL)
+        self._redis = aioredis.from_url(config.REDIS_URL)
 
     async def close(self):
         if self._redis:
-            self._redis.close()
-            await self._redis.wait_closed()
+            await self._redis.close()
             self._redis = None
 
 redis_client = RedisClient()

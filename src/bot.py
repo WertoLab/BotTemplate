@@ -50,7 +50,7 @@ def main():
     app.on_startup.append(on_startup)
     app.on_shutdown.append(on_shutdown)
 
-    web.run_app(app, host=config.WEBHOOK_HOST, port=config.WEBHOOK_PORT)
+    web.run_app(app, host=config.WEBAPP_HOST, port=config.WEBAPP_PORT)
 
 
 if __name__ == '__main__':
