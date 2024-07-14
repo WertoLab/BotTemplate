@@ -31,5 +31,5 @@ class Config:
     def get(self, key, default=None):
         return getattr(self, key, default)
 
-config = Config()
 
+config = Config()
