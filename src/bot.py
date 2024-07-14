@@ -11,7 +11,6 @@ logging.basicConfig(level=logging.INFO)
 
 bot = Bot(token=config.TOKEN_BOT, default=DefaultBotProperties(parse_mode='HTML'))
 
-
 async def on_startup(app):
     await setup_redis()
     storage = RedisStorage(redis_client._redis)
@@ -23,7 +22,6 @@ async def on_startup(app):
     await bot.set_webhook(config.WEBHOOK_URL)
     logging.info(f"Webhook set to {config.WEBHOOK_URL}")
 
-
 async def on_shutdown(app):
     dp = app['dp']
     logging.info("Removing webhook")
@@ -34,17 +32,13 @@ async def on_shutdown(app):
     # Закрытие всех клиентских сессий
     await bot.session.close()
 
-
 async def handle(request):
     dp = request.app['dp']
     if request.path == config.WEBHOOK_PATH:
         update = await request.json()
-        Bot.set_current(bot)
-        Dispatcher.set_current(dp)
-        await dp.feed_update(bot, update)
+        await dp.process_update(update)
         return web.Response(status=200)
     return web.Response(status=404)
-
 
 def main():
     app = web.Application()
@@ -53,7 +47,6 @@ def main():
     app.on_shutdown.append(on_shutdown)
 
     web.run_app(app, host=config.WEBHOOK_HOST, port=config.WEBHOOK_PORT)
-
 
 if __name__ == '__main__':
     main()
