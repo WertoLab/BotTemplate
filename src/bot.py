@@ -30,6 +30,7 @@ async def on_shutdown(app):
     await bot.delete_webhook()
     await shutdown_redis()
     await dp.storage.close()
+
     await bot.session.close()
 
 
@@ -40,7 +41,7 @@ async def handle(request):
         Bot.set_current(bot)
         Dispatcher.set_current(dp)
         await dp.feed_update(bot, update)
-        return web.Response()
+        return web.Response(status=200)
     return web.Response(status=404)
 
 
