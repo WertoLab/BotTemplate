@@ -3,9 +3,9 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from sqlalchemy.orm import Session
-from database.models import User, Paper
-from database.db import database
-from handlers.filters import IsAllowedUser
+from src.database.models import User, Paper
+from src.database.db import database
+from src.handlers.filters import IsAllowedUser
 
 router = Router()
 

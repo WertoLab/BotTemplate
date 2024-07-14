@@ -6,6 +6,7 @@ from config import config
 from handlers.commands import router as commands_router
 from database import setup_redis, shutdown_redis, redis_client
 from aiogram.client.bot import DefaultBotProperties
+from aiogram.types import Update
 
 logging.basicConfig(level=logging.INFO)
 
@@ -35,8 +36,9 @@ async def on_shutdown(app):
 async def handle(request):
     dp = request.app['dp']
     if request.path == config.WEBHOOK_PATH:
-        update = await request.json()
-        await dp.process_update(update)
+        data = await request.json()
+        update = Update(**data)
+        await dp.feed_update(bot, update)
         return web.Response(status=200)
     return web.Response(status=404)
 

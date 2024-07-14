@@ -1,6 +1,6 @@
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
-from config import config
+from src.config import config
 
 class IsAllowedUser(BaseFilter):
     async def __call__(self, message: Message) -> bool:
