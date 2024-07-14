@@ -24,6 +24,8 @@ class Config:
         print(f"Loaded REDIS_URL: {self.REDIS_URL}")
         print(f"Loaded WEBHOOK_URL: {self.WEBHOOK_URL}")
         print(f"Loaded WEBHOOK_PATH: {self.WEBHOOK_PATH}")
+        print(f"Loaded WEBHOOK_HOST: {self.WEBHOOK_HOST}")
+        print(f"Loaded WEBHOOK_PORT: {self.WEBHOOK_PORT}")
         print(f"Loaded ALLOWED_USERS: {self.ALLOWED_USERS}")
 
     def get(self, key, default=None):
