@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 
 class Config:
     def __init__(self):
@@ -15,10 +16,14 @@ class Config:
         self.WEBHOOK_PORT = int(os.getenv("WEBHOOK_PORT"))
         self.ALLOWED_USERS = list(map(int, os.getenv("ALLOWED_USERS").split(',')))
 
+        parsed_url = urlparse(self.WEBHOOK_URL)
+        self.WEBHOOK_PATH = parsed_url.path
+
         print(f"Loaded TELEGRAM_BOT_TOKEN: {self.TOKEN_BOT}")
         print(f"Loaded DATABASE_URL: {self.DATABASE_URL}")
         print(f"Loaded REDIS_URL: {self.REDIS_URL}")
         print(f"Loaded WEBHOOK_URL: {self.WEBHOOK_URL}")
+        print(f"Loaded WEBHOOK_PATH: {self.WEBHOOK_PATH}")
         print(f"Loaded ALLOWED_USERS: {self.ALLOWED_USERS}")
 
     def get(self, key, default=None):
