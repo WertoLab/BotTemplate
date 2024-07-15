@@ -52,5 +52,5 @@ async def save_paper(message: types.Message, state: FSMContext):
     session.commit()
     session.close()
 
-    await message.answer(f"Научная работа '{message.text}' сохранена.")
+    await message.answer(f"Научная работа '{message.text}' сохранена с переводом '{translated_title}'.")
     await state.clear()
