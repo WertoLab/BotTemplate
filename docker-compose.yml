@@ -9,6 +9,8 @@ services:
       - postgres
       - redis
       - dbmate
+    volumes:
+      - .:/app
     ports:
       - "8443:8443"
 
@@ -46,6 +48,16 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    environment:
+      - DATABASE_URL=${DATABASE_URL_SSL}
+
+  translator:
+    build: .
+    command: python src/translator/translate_titles.py
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
     environment:
       - DATABASE_URL=${DATABASE_URL_SSL}
 
