@@ -1,7 +1,7 @@
 from googletrans import Translator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Title, Base
+from database.models import Title, Base
 from config import config
 
 
