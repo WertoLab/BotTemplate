@@ -1,20 +1,20 @@
-import os
 from googletrans import Translator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database.models import Title, Base
+from models import Title, Base
 from config import config
 
 
 engine = create_engine(config.DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
 session = SessionLocal()
 
 translator = Translator()
 
-with open('titles.txt', 'r', encoding='utf-8') as file:
+file_path = config.TITLES_PATH
+
+with open(file_path, 'r', encoding='utf-8') as file:
     titles = file.readlines()
 
 for title in titles:

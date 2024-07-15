@@ -15,6 +15,7 @@ class Config:
         self.WEBHOOK_HOST = os.getenv("WEBHOOK_HOST")
         self.WEBHOOK_PORT = int(os.getenv("WEBHOOK_PORT"))
         self.ALLOWED_USERS = list(map(int, os.getenv("ALLOWED_USERS").split(',')))
+        self.TITLES_PATH = os.getenv("TITLES_PATH")
 
         parsed_url = urlparse(self.WEBHOOK_URL)
         self.WEBHOOK_PATH = parsed_url.path
@@ -27,6 +28,7 @@ class Config:
         print(f"Loaded WEBHOOK_HOST: {self.WEBHOOK_HOST}")
         print(f"Loaded WEBHOOK_PORT: {self.WEBHOOK_PORT}")
         print(f"Loaded ALLOWED_USERS: {self.ALLOWED_USERS}")
+        print(f"Loaded TITLES_PATH: {self.TITLES_PATH}")
 
     def get(self, key, default=None):
         return getattr(self, key, default)
