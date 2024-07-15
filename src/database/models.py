@@ -4,6 +4,12 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+class Title(Base):
+    __tablename__ = 'titles'
+    id = Column(Integer, primary_key=True)
+    original_title = Column(String, nullable=False)
+    translated_title = Column(String, nullable=True)
+
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
