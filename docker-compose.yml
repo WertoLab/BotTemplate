@@ -40,9 +40,9 @@ services:
 
   dbmate:
     image: amacneil/dbmate
-    command: -d "/code/migrations" up
+    command: -d "/app/migrations" up
     volumes:
-      - .:/code
+      - .:/app
     depends_on:
       postgres:
         condition: service_healthy
