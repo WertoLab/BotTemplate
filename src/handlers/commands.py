@@ -7,11 +7,16 @@ from database.models import User, Paper
 from database.db import database
 from handlers.filters import IsAllowedUser
 from googletrans import Translator
+from pydantic import BaseModel
+from config import config
+from gateway.gateway_service import gateway_service
 
 router = Router()
 
 translator = Translator()
 
+class SimilarTitleResponse(BaseModel):
+    similar_title: str
 
 class PaperState(StatesGroup):
     waiting_for_title = State()
@@ -53,4 +58,14 @@ async def save_paper(message: types.Message, state: FSMContext):
     session.close()
 
     await message.answer(f"Научная работа '{message.text}' сохранена с переводом '{translated_title}'.")
+
+    similar_titles = await gateway_service.fetch_similar_titles(translated_title)
+
+    if similar_titles:
+        similar_titles_text = "\n".join(similar_titles)
+        response_text = f"Вот список самых похожих названий, которые мы смогли найти:\n{similar_titles_text}"
+        await message.answer(response_text)
+    else:
+        await message.answer("Не удалось найти похожих названий.")
+
     await state.clear()
