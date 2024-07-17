@@ -16,6 +16,7 @@ import asyncio
 router = Router()
 
 translator = Translator()
+logging.basicConfig(level=logging.INFO)
 
 class SimilarTitleResponse(BaseModel):
     similar_title: str
@@ -44,7 +45,6 @@ async def add_paper(message: types.Message, state: FSMContext):
 
 @router.message(PaperState.waiting_for_title, IsAllowedUser())
 async def save_paper(message: types.Message, state: FSMContext):
-    logging.info(f"save_paper called with message: {message.text}")
     session: Session = database.get_session()
     user = session.query(User).filter(User.user_id == message.from_user.id).first()
 
@@ -58,23 +58,18 @@ async def save_paper(message: types.Message, state: FSMContext):
     paper = Paper(title=message.text, translated_title=translated_title, user_id=user.id)
     session.add(paper)
     session.commit()
-    logging.info(f"Paper saved with title: {message.text} and translated title: {translated_title}")
     session.close()
 
     await message.answer(f"Научная работа '{message.text}' сохранена с переводом '{translated_title}'.")
 
     try:
-        # Установка таймаута для запроса к внешнему сервису
-        similar_titles = await asyncio.wait_for(gateway_service.fetch_similar_titles(translated_title), timeout=10.0)
-        logging.info(f"Fetched similar titles: {similar_titles}")
-
+        similar_titles = await asyncio.wait_for(gateway_service.fetch_similar_titles(translated_title), timeout=120)
         if similar_titles:
             similar_titles_text = "\n".join(similar_titles)
             response_text = f"Вот список самых похожих названий, которые мы смогли найти:\n{similar_titles_text}"
             await message.answer(response_text)
         else:
             await message.answer("Не удалось найти похожих названий.")
-
     except asyncio.TimeoutError:
         logging.error("Timeout while fetching similar titles")
         await message.answer("Произошла ошибка при попытке получить похожие названия. Попробуйте еще раз позже.")
