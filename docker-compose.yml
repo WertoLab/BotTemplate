@@ -51,15 +51,5 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL_SSL}
 
-  translator:
-    build: .
-    command: python src/translator/translate_titles.py
-    volumes:
-      - .:/app
-    depends_on:
-      - postgres
-    environment:
-      - DATABASE_URL=${DATABASE_URL_SSL}
-
 volumes:
   postgres_data:

@@ -8,7 +8,7 @@ from handlers.callbacks import send_title_router, view_papers_router, help_route
 from database import setup_redis, shutdown_redis, redis_client
 from aiogram.client.bot import DefaultBotProperties
 from aiogram.types import Update
-
+from aiogram.exceptions import TelegramBadRequest
 
 logging.basicConfig(level=logging.INFO)
 
@@ -48,8 +48,15 @@ async def handle(request):
     if request.path == config.WEBHOOK_PATH:
         data = await request.json()
         update = Update(**data)
-        await dp.feed_update(bot, update)
-        return web.Response(status=200)
+        try:
+            await dp.feed_update(bot, update)
+            return web.Response(status=200)
+        except TelegramBadRequest as e:
+            logging.error(f"TelegramBadRequest: {e}")
+            return web.Response(status=400)
+        except Exception as e:
+            logging.error(f"Error handling request: {e}")
+            return web.Response(status=500)
     return web.Response(status=404)
 
 
