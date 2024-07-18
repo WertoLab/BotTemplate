@@ -1,11 +1,12 @@
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
+from aiogram.exceptions import TelegramBadRequest
+from database.models import User, Paper
+from database.db import database
+from sqlalchemy.orm import Session
 from handlers.filters import IsAllowedUser
 from handlers.states import PaperState
 from services import translate_text, gateway_service
-from database.db import database
-from database.models import User, Paper
-from sqlalchemy.orm import Session
 import asyncio
 import logging
 
@@ -15,6 +16,10 @@ router = Router()
 async def handle_text(message: types.Message, state: FSMContext):
     current_state = await state.get_state()
     if current_state == PaperState.waiting_for_title.state:
+        if len(message.text) > 255:
+            await message.answer("Название работы слишком длинное. Пожалуйста, введите название не более 255 символов.")
+            return
+
         session: Session = database.get_session()
         user = session.query(User).filter(User.user_id == message.from_user.id).first()
 
