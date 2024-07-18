@@ -1,27 +1,23 @@
 import sys
 import asyncio
 from pathlib import Path
-from config import config
 from database import database, setup_redis, shutdown_redis, redis_client
 
-project_root = Path(__file__).parent.parent
+project_root = Path(__file__).parent
 sys.path.append(str(project_root / 'src'))
-
-token = config.TOKEN_BOT
-print(f"Telegram Bot Token: {token}")
 
 async def main():
     await setup_redis()
 
     session = database.get_session()
-    print("PostgreSQL session created successfully.")
+    print("PostgreSQL session создана успешно.")
 
-    redis = redis_client._redis
+    redis = redis_client.get_redis()
     await redis.set('key', 'value')
     value = await redis.get('key', encoding='utf-8')
-    print(f"Value from Redis: {value}")
+    print(f"Значение из Redis: {value}")
 
-    print("Configuration and database connections are set up successfully.")
+    print("Настройка конфигурации и подключений к базе данных выполнена успешно.")
 
     await shutdown_redis()
 
