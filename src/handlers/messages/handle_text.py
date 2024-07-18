@@ -12,12 +12,19 @@ import logging
 
 router = Router()
 
+
 @router.message(IsAllowedUser())
 async def handle_text(message: types.Message, state: FSMContext):
     current_state = await state.get_state()
     if current_state == PaperState.waiting_for_title.state:
         if len(message.text) > 255:
-            await message.answer("Название работы слишком длинное. Пожалуйста, введите название не более 255 символов.")
+            await message.answer("Название работы слишком длинное. Пожалуйста, введите более короткое название.")
+            return
+
+        translated_title = await translate_text(message.text)
+
+        if len(translated_title) > 255:
+            await message.answer("Название работы слишком длинное. Пожалуйста, введите более короткое название.")
             return
 
         session: Session = database.get_session()
@@ -28,14 +35,12 @@ async def handle_text(message: types.Message, state: FSMContext):
             session.add(user)
             session.commit()
 
-        translated_title = await translate_text(message.text)
-
         paper = Paper(title=message.text, translated_title=translated_title, user_id=user.id)
         session.add(paper)
         session.commit()
         session.close()
 
-        await message.answer(f"Научная работа '{message.text}' сохранена с переводом '{translated_title}'.")
+        await message.answer(f"Ищу самую похожую по смыслу работу с ({message.text})")
 
         try:
             similar_titles = await asyncio.wait_for(gateway_service.fetch_similar_titles(translated_title), timeout=200)
