@@ -1,9 +1,8 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 def get_main_menu():
-    buttons = [
-        [InlineKeyboardButton(text="Отправить название", callback_data="send_title")],
-        [InlineKeyboardButton(text="Посмотреть список сохраненных работ", callback_data="view_papers")],
-        [InlineKeyboardButton(text="Помощь", callback_data="help")]
-    ]
-    return InlineKeyboardMarkup(inline_keyboard=buttons)
+    keyboard = InlineKeyboardMarkup()
+    keyboard.add(InlineKeyboardButton(text="Отправить название", callback_data="send_title"))
+    keyboard.add(InlineKeyboardButton(text="Посмотреть список сохраненных работ", callback_data="view_papers"))
+    keyboard.add(InlineKeyboardButton(text="Помощь", callback_data="help"))
+    return keyboard
