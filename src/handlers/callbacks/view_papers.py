@@ -18,22 +18,23 @@ async def view_papers(callback_query: CallbackQuery):
 
     if user:
         papers = user.papers
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[])
+
         if papers:
-            keyboard = InlineKeyboardMarkup()
             for paper in papers:
-                keyboard.add(InlineKeyboardButton(
-                    text=f"Удалить: {paper.title}", callback_data=f"delete_paper_{paper.id}")
+                keyboard.inline_keyboard.append(
+                    [InlineKeyboardButton(
+                        text=f"Удалить: {paper.title}",
+                        callback_data=f"delete_paper_{paper.id}"
+                    )]
                 )
-            keyboard.add(InlineKeyboardButton(text="Назад", callback_data="back_to_main"))
-            await callback_query.message.edit_text(
-                "Ваши сохраненные работы:",
-                reply_markup=keyboard
-            )
-        else:
-            keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="Назад", callback_data="back_to_main")]
-            ])
-            await callback_query.message.edit_text("У вас нет сохраненных работ.", reply_markup=keyboard)
+        keyboard.inline_keyboard.append(
+            [InlineKeyboardButton(text="Назад", callback_data="back_to_main")]
+        )
+        await callback_query.message.edit_text(
+            "Ваши сохраненные работы:" if papers else "У вас нет сохраненных работ.",
+            reply_markup=keyboard
+        )
     else:
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="Назад", callback_data="back_to_main")]
