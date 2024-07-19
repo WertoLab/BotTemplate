@@ -30,10 +30,14 @@ async def view_papers(callback_query: CallbackQuery):
                 reply_markup=keyboard
             )
         else:
-            keyboard = InlineKeyboardMarkup().add(InlineKeyboardButton(text="Назад", callback_data="back_to_main"))
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="Назад", callback_data="back_to_main")]
+            ])
             await callback_query.message.edit_text("У вас нет сохраненных работ.", reply_markup=keyboard)
     else:
-        keyboard = InlineKeyboardMarkup().add(InlineKeyboardButton(text="Назад", callback_data="back_to_main"))
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="Назад", callback_data="back_to_main")]
+        ])
         await callback_query.message.edit_text("Вы не зарегистрированы.", reply_markup=keyboard)
 
     await callback_query.answer()

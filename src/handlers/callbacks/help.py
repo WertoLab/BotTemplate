@@ -10,10 +10,12 @@ router = Router()
 async def help(callback_query: CallbackQuery):
     logging.info(f"Callback query received for help")
 
-    keyboard = InlineKeyboardMarkup().add(InlineKeyboardButton(text="Назад", callback_data="back_to_main"))
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="Назад", callback_data="back_to_main")]
+    ])
     await callback_query.message.edit_text(
         "1. Отправить название научной работы и получить список похожих названий.\n"
-        "2. (В будущем) Посмотреть список ваших сохраненных работ.\n"
+        "2. Посмотреть список ваших сохраненных работ.\n"
         "Просто выберите соответствующую опцию в меню.",
         reply_markup=keyboard
     )
