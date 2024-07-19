@@ -11,8 +11,11 @@ router = Router()
 
 @router.callback_query(IsAllowedUser(), lambda c: c.data == 'view_papers')
 async def view_papers(callback_query: CallbackQuery):
+    logging.info("Callback query received for view_papers")
+
     session: Session = database.get_session()
     user = session.query(User).filter(User.user_id == callback_query.from_user.id).first()
+    logging.info(f"User: {user}")
 
     if not user:
         await callback_query.message.answer("Вы не зарегистрированы в системе.")
@@ -20,6 +23,7 @@ async def view_papers(callback_query: CallbackQuery):
         return
 
     papers = session.query(Paper).filter(Paper.user_id == user.id).all()
+    logging.info(f"Papers: {papers}")
     session.close()
 
     if not papers:
@@ -32,7 +36,9 @@ async def view_papers(callback_query: CallbackQuery):
         response_text += f"- {paper.title} (Перевод: {paper.translated_title})\n"
 
     keyboard = get_delete_paper_keyboard(papers)
+    logging.info(f"Keyboard: {keyboard}")
 
+    # Разделение текста на части, если он слишком длинный
     messages = [response_text[i:i+4096] for i in range(0, len(response_text), 4096)]
 
     try:
