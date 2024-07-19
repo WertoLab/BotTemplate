@@ -36,9 +36,8 @@ async def view_papers(callback_query: CallbackQuery):
         response_text += f"- {paper.title} (Перевод: {paper.translated_title})\n"
 
     keyboard = get_delete_paper_keyboard(papers)
-    logging.info(f"Keyboard: {keyboard}")
+    logging.info(f"Keyboard: {keyboard.inline_keyboard}")
 
-    # Разделение текста на части, если он слишком длинный
     messages = [response_text[i:i+4096] for i in range(0, len(response_text), 4096)]
 
     try:
