@@ -34,5 +34,5 @@ async def view_papers(callback_query: CallbackQuery):
         )
     markup = InlineKeyboardMarkup(inline_keyboard=buttons)
 
-    await callback_query.message.answer("Ваши работы:", reply_markup=markup)
+    await callback_query.message.answer("Ваши сохраненные работы.\nНажмите на название, чтобы удалить", reply_markup=markup)
     await callback_query.answer()
