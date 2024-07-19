@@ -4,7 +4,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 from aiohttp import web
 from config import config
 from handlers import start_router, add_paper_router, handle_text_router
-from handlers.callbacks import send_title_router, view_papers_router, help_router
+from handlers.callbacks import send_title_router, view_papers_router, delete_paper_router, help_router
 from database import setup_redis, shutdown_redis, redis_client
 from aiogram.client.bot import DefaultBotProperties
 from aiogram.types import Update
@@ -25,6 +25,7 @@ async def on_startup(app):
     dp.include_router(handle_text_router)
     dp.include_router(send_title_router)
     dp.include_router(view_papers_router)
+    dp.include_router(delete_paper_router)
     dp.include_router(help_router)
 
     app['dp'] = dp
