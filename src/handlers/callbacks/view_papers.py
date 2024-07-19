@@ -8,31 +8,29 @@ import logging
 
 router = Router()
 
+
 @router.callback_query(IsAllowedUser(), lambda c: c.data == 'view_papers')
 async def view_papers(callback_query: CallbackQuery):
     logging.info(f"Callback query received for view_papers")
 
     session: Session = database.get_session()
     user = session.query(User).filter(User.user_id == callback_query.from_user.id).first()
-    papers = user.papers if user else []
 
-    logging.info(f"User: {user}")
-    logging.info(f"Papers: {papers}")
+    if user:
+        papers = user.papers
+        if papers:
+            keyboard = InlineKeyboardMarkup()
+            for paper in papers:
+                keyboard.add(InlineKeyboardButton(
+                    text=f"Удалить: {paper.title}", callback_data=f"delete_paper_{paper.id}")
+                )
+            await callback_query.message.edit_text(
+                "Ваши сохраненные работы:",
+                reply_markup=keyboard
+            )
+        else:
+            await callback_query.message.edit_text("У вас нет сохраненных работ.")
+    else:
+        await callback_query.message.edit_text("Вы не зарегистрированы.")
 
-    if not papers:
-        await callback_query.message.answer("У вас нет сохраненных работ.")
-        await callback_query.answer()
-        return
-
-    buttons = []
-    for paper in papers:
-        buttons.append(
-            [InlineKeyboardButton(
-                text=f"{paper.title}",
-                callback_data=f"delete_paper:{paper.id}"
-            )]
-        )
-    markup = InlineKeyboardMarkup(inline_keyboard=buttons)
-
-    await callback_query.message.answer("Ваши сохраненные работы.\nНажмите на название, чтобы удалить", reply_markup=markup)
     await callback_query.answer()
