@@ -69,6 +69,5 @@ def main():
 
     web.run_app(app, host=config.WEBHOOK_HOST, port=config.WEBHOOK_PORT)
 
-
 if __name__ == '__main__':
     main()
