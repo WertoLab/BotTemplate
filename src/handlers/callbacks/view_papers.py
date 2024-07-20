@@ -1,4 +1,4 @@
-from aiogram import Router, types
+from aiogram import Router
 from aiogram.types import CallbackQuery
 from sqlalchemy.orm import Session
 from database.db import database
@@ -21,7 +21,7 @@ async def view_papers(callback_query: CallbackQuery):
         if user:
             papers = user.papers
             papers_list = "\n".join([f"{i+1}. {paper.title}" for i, paper in enumerate(papers)])
-            message_text = f"Ваши сохраненные работы:\n\n{papers_list}\n\nВыберите работу для удаления." if papers else "У вас нет сохраненных работ."
+            message_text = f"Ваши сохраненные работы:\n\n{papers_list}\n\nВыберите работу для дальнейшего взаимодействия." if papers else "У вас нет сохраненных работ."
             keyboard = create_papers_keyboard(papers)
             await callback_query.message.edit_text(message_text, reply_markup=keyboard)
         else:

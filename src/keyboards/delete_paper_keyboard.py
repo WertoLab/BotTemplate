@@ -1,9 +1,8 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-def get_delete_paper_keyboard(papers):
-    buttons = [
-        [InlineKeyboardButton(f"Удалить '{paper.title}'", callback_data=f"delete_paper:{paper.id}")]
-        for paper in papers
-    ]
-    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+def create_delete_keyboard(paper_id):
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="Удалить", callback_data=f"delete_paper_{paper_id}")],
+        [InlineKeyboardButton(text="Назад", callback_data="view_papers")]
+    ])
     return keyboard

@@ -1,10 +1,10 @@
-from aiogram import Router, types
+from aiogram import Router
 from aiogram.types import CallbackQuery
 from sqlalchemy.orm import Session
 from database.db import database
 from database.models import Paper
 from handlers.filters import IsAllowedUser
-from keyboards.view_papers_buttons import create_delete_keyboard, create_papers_keyboard
+from keyboards import create_delete_keyboard, create_papers_keyboard
 import logging
 
 router = Router()
@@ -22,7 +22,7 @@ async def select_paper(callback_query: CallbackQuery):
         if paper:
             keyboard = create_delete_keyboard(paper_id)
             await callback_query.message.edit_text(
-                f"Вы выбрали работу:\n\n{paper.title}\n\nВы хотите удалить эту работу?",
+                f"Вы выбрали работу:\n{paper.title}",
                 reply_markup=keyboard
             )
         else:
