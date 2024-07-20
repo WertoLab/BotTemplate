@@ -26,7 +26,7 @@ async def delete_paper(callback_query: CallbackQuery):
             papers = user.papers if user else []
 
             papers_list = "\n".join([f"{i+1}. {paper.title}" for i, paper in enumerate(papers)])
-            message_text = f"Ваши сохраненные работы:\n\n{papers_list}\n\nВыберите работу для удаления." if papers else "У вас нет сохраненных работ."
+            message_text = f"Ваши сохраненные работы:\n\n{papers_list}\n\nВыберите работу для дальнейшего взаимодействия." if papers else "У вас нет сохраненных работ."
             keyboard = create_papers_keyboard(papers)
 
             await callback_query.message.edit_text(message_text, reply_markup=keyboard)
