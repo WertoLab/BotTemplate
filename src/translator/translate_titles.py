@@ -1,6 +1,4 @@
-import os
 import asyncio
-import aiohttp
 import logging
 from googletrans import Translator
 from sqlalchemy import create_engine
