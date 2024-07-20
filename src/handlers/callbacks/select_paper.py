@@ -22,7 +22,7 @@ async def select_paper(callback_query: CallbackQuery):
         if paper:
             keyboard = create_delete_keyboard(paper_id)
             await callback_query.message.edit_text(
-                f"Вы выбрали работу:\n{paper.title}",
+                f"Вы выбрали работу:\n\n{paper.title}",
                 reply_markup=keyboard
             )
         else:
