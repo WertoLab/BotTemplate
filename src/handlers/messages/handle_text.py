@@ -28,31 +28,41 @@ async def handle_text(message: types.Message, state: FSMContext):
             return
 
         session: Session = database.get_session()
-        user = session.query(User).filter(User.user_id == message.from_user.id).first()
-
-        if not user:
-            user = User(user_id=message.from_user.id, username=message.from_user.username)
-            session.add(user)
-            session.commit()
-
-        paper = Paper(title=message.text, translated_title=translated_title, user_id=user.id)
-        session.add(paper)
-        session.commit()
-        session.close()
-
-        await message.answer(f"Ищу самую похожую по смыслу работу с ({message.text})")
 
         try:
-            similar_titles = await asyncio.wait_for(gateway_service.fetch_similar_titles(translated_title), timeout=200)
-            if similar_titles:
-                similar_titles_text = "\n".join(similar_titles)
-                response_text = f"Вот список самых похожих названий, которые мы смогли найти:\n{similar_titles_text}"
-                await message.answer(response_text)
-            else:
-                await message.answer("Не удалось найти похожих названий.")
-        except asyncio.TimeoutError:
-            logging.error("Timeout while fetching similar titles")
-            await message.answer("Произошла ошибка при попытке получить похожие названия. Попробуйте еще раз позже.")
+            user = session.query(User).filter(User.user_id == message.from_user.id).first()
+
+            if not user:
+                user = User(user_id=message.from_user.id, username=message.from_user.username)
+                session.add(user)
+                session.commit()
+
+            paper = Paper(title=message.text, translated_title=translated_title, user_id=user.id)
+            session.add(paper)
+            session.commit()
+
+            await message.answer(f"Ищу самую похожую по смыслу работу с ({message.text})")
+
+            try:
+                similar_titles = await asyncio.wait_for(gateway_service.fetch_similar_titles(translated_title),
+                                                        timeout=200)
+                if similar_titles:
+                    similar_titles_text = "\n".join(similar_titles)
+                    response_text = f"Вот список самых похожих названий, которые мы смогли найти:\n{similar_titles_text}"
+                    await message.answer(response_text)
+                else:
+                    await message.answer("Не удалось найти похожих названий.")
+            except asyncio.TimeoutError:
+                logging.error("Timeout while fetching similar titles")
+                await message.answer(
+                    "Произошла ошибка при попытке получить похожие названия. Попробуйте еще раз позже.")
+
+        except Exception as e:
+            logging.error(f"Error handling text: {e}")
+            await message.answer("Произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте еще раз.")
+
+        finally:
+            database.close_session()
 
         await state.clear()
     else:

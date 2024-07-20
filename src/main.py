@@ -10,12 +10,21 @@ async def main():
     await setup_redis()
 
     session = database.get_session()
-    print("PostgreSQL session создана успешно.")
+    try:
+        print("PostgreSQL session создана успешно.")
+
+    except Exception as e:
+        print(f"Ошибка при работе с PostgreSQL: {e}")
+    finally:
+        database.close_session()
 
     redis = redis_client.get_redis()
-    await redis.set('key', 'value')
-    value = await redis.get('key', encoding='utf-8')
-    print(f"Значение из Redis: {value}")
+    try:
+        await redis.set('key', 'value')
+        value = await redis.get('key', encoding='utf-8')
+        print(f"Значение из Redis: {value}")
+    except Exception as e:
+        print(f"Ошибка при работе с Redis: {e}")
 
     print("Настройка конфигурации и подключений к базе данных выполнена успешно.")
 
