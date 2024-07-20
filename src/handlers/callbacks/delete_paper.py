@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from database.db import database
 from database.models import Paper
 from handlers.filters import IsAllowedUser
+from keyboards import create_delete_keyboard
 import logging
 
 router = Router()
@@ -23,6 +24,7 @@ async def delete_paper(callback_query: CallbackQuery):
             await callback_query.message.edit_text("Работа успешно удалена.")
         else:
             await callback_query.message.edit_text("Работа не найдена.")
+
         await callback_query.answer()
     except Exception as e:
         logging.error(f"Error deleting paper: {e}")

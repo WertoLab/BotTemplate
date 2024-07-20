@@ -1,9 +1,10 @@
 from aiogram import Router, types
-from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import CallbackQuery
 from sqlalchemy.orm import Session
 from database.db import database
-from database.models import User, Paper
+from database.models import User
 from handlers.filters import IsAllowedUser
+from keyboards import create_papers_keyboard
 import logging
 
 router = Router()
@@ -19,27 +20,12 @@ async def view_papers(callback_query: CallbackQuery):
 
         if user:
             papers = user.papers
-            keyboard = InlineKeyboardMarkup(inline_keyboard=[])
-
-            if papers:
-                for paper in papers:
-                    keyboard.inline_keyboard.append(
-                        [InlineKeyboardButton(
-                            text=f"Удалить: {paper.title}",
-                            callback_data=f"delete_paper_{paper.id}"
-                        )]
-                    )
-            keyboard.inline_keyboard.append(
-                [InlineKeyboardButton(text="Назад", callback_data="back_to_main")]
-            )
-            await callback_query.message.edit_text(
-                "Ваши сохраненные работы:" if papers else "У вас нет сохраненных работ.",
-                reply_markup=keyboard
-            )
+            papers_list = "\n".join([f"{i+1}. {paper.title}" for i, paper in enumerate(papers)])
+            message_text = f"Ваши сохраненные работы:\n\n{papers_list}\n\nВыберите работу для удаления." if papers else "У вас нет сохраненных работ."
+            keyboard = create_papers_keyboard(papers)
+            await callback_query.message.edit_text(message_text, reply_markup=keyboard)
         else:
-            keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="Назад", callback_data="back_to_main")]
-            ])
+            keyboard = create_papers_keyboard([])
             await callback_query.message.edit_text("Вы не зарегистрированы.", reply_markup=keyboard)
 
         await callback_query.answer()
