@@ -14,7 +14,7 @@ services:
     ports:
       - "8443:8443"
     command: >
-      sh -c "python translator/translate_titles.py && python bot.py"
+      sh -c "python src/translator/translate_titles.py && python bot.py"
 
   postgres:
     image: postgres:13
