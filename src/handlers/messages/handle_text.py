@@ -47,7 +47,7 @@ async def handle_text(message: types.Message, state: FSMContext):
                 similar_titles = await asyncio.wait_for(gateway_service.fetch_similar_titles(translated_title),
                                                         timeout=200)
                 if similar_titles:
-                    similar_titles_text = "\n".join(similar_titles)
+                    similar_titles_text = "\n".join([f"{i + 1}. {title}" for i, title in enumerate(similar_titles)])
                     response_text = f"Вот список самых похожих названий, которые мы смогли найти:\n{similar_titles_text}"
                     await message.answer(response_text)
                 else:
